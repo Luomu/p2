@@ -54,4 +54,4 @@ solution "p2"
 			"contrib/pioneer/text/*",
 			"contrib/jenkins/*"
 		}
-		includedirs { "contrib", "contrib/pioneer" }
+		includedirs { "contrib", "contrib/pioneer", "engine/ui_compat" }
