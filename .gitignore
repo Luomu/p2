@@ -1,0 +1,18 @@
+#binary ignores
+*.bin
+*.dll
+*.lib
+*.exe
+
+#VS ignores
+*.pdb
+*.suo
+*.sdf
+*.opensdf
+*.wwdb
+*.user
+*.ilk
+*.idb
+
+ipch
+obj
