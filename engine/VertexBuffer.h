@@ -31,11 +31,15 @@ namespace Video {
 		const VertexBufferDesc &GetDesc() const { return m_desc; }
 
 		/// get data pointer for modifying the buffer
-		virtual U8 *Map() = 0;
+		template <typename T>
+		T* Map() {
+			return reinterpret_cast<T*>(MapInternal());
+		}
 		/// finish modifications and upload to gpu
 		virtual void Unmap() = 0;
 
 	protected:
+		virtual U8 *MapInternal() = 0;
 		VertexBufferDesc m_desc;
 	};
 }

@@ -78,7 +78,7 @@ void GLVertexBuffer::SetupAttribPointers()
 	}
 }
 
-U8 *GLVertexBuffer::Map()
+U8 *GLVertexBuffer::MapInternal()
 {
 	return m_data;
 }

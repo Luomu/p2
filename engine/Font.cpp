@@ -5,6 +5,12 @@
 const U32 MAX_FAST_GLYPHS          = 256;
 const U32 QUESTION_MARK_CHARCODE   = 63;
 
+struct FontVertex {
+	vec3     pos;
+	Color4ub color;
+	vec2     uv;
+};
+
 Font::Font(const std::string &filename, Video::Device *video)
 : m_video(video)
 {
@@ -42,10 +48,10 @@ Font::Font(const std::string &filename, Video::Device *video)
 	Video::VertexBufferDesc	vbdesc = {};
 	vbdesc.attribs[0].semantic = ATTRIB_POSITION;
 	vbdesc.attribs[0].format   = ATTRIB_FORMAT_FLOAT3;
-	vbdesc.attribs[1].semantic = ATTRIB_UV;
-	vbdesc.attribs[1].format   = ATTRIB_FORMAT_FLOAT2;
-	vbdesc.attribs[2].semantic = ATTRIB_COLOR;
-	vbdesc.attribs[2].format   = ATTRIB_FORMAT_UBYTE4;
+	vbdesc.attribs[1].semantic = ATTRIB_COLOR;
+	vbdesc.attribs[1].format   = ATTRIB_FORMAT_UBYTE4;
+	vbdesc.attribs[2].semantic = ATTRIB_UV;
+	vbdesc.attribs[2].format   = ATTRIB_FORMAT_FLOAT2;
 	vbdesc.primitiveType = PRIMITIVE_TRIANGLES;
 	vbdesc.usage         = BUFFER_DYNAMIC;
 	vbdesc.numVertices   = 256;
@@ -129,9 +135,10 @@ void Font::ParseGlyph(const StringRange &line)
 
 void Font::UpdateGeometry(const char *str, float x, float y, const Color &color)
 {
-	U8 *vts = m_vtxBuffer->Map();
+	FontVertex *vts = m_vtxBuffer->Map<FontVertex>();
 	const Video::VertexBufferDesc &vbdesc = m_vtxBuffer->GetDesc();
 	const U32 vtxSize    = vbdesc.VertexSize();
+	SDL_assert(sizeof(FontVertex) == vtxSize);
 	const U32 posOffset  = vbdesc.Offset(ATTRIB_POSITION);
 	const U32 uvOffset   = vbdesc.Offset(ATTRIB_UV);
 	const U32 colOffset  = vbdesc.Offset(ATTRIB_COLOR);
@@ -170,10 +177,10 @@ void Font::UpdateGeometry(const char *str, float x, float y, const Color &color)
 				const vec2 t3(offU+glyph.uvSize.x, offV+glyph.uvSize.y);
 
 #define ADDVTX(_pos, _col, _uv) \
-				*reinterpret_cast<vec3*>(vts + posOffset)     = _pos; \
-				*reinterpret_cast<Color4ub*>(vts + colOffset) = _col; \
-				*reinterpret_cast<vec2*>(vts + uvOffset)      = _uv;  \
-				vts += vtxSize;
+				vts->pos     = _pos; \
+				vts->color   = _col; \
+				vts->uv      = _uv;  \
+				vts++;
 
 				ADDVTX(p0, ubCol, t0)
 				ADDVTX(p1, ubCol, t1)

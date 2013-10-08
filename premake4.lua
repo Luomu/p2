@@ -43,6 +43,11 @@ solution "p2"
 		includedirs { "contrib/pioneer" }
 		files { "test.cpp" }
 
+	project "Lua"
+		kind "StaticLib"
+		files { "contrib/lua/*" }
+		excludes { "contrib/lua/lua.c", "contrib/lua/luac.c" }
+
 	project "Engine"
 		kind "StaticLib"
 		files {

@@ -7,12 +7,12 @@ namespace Video {
 		GLVertexBuffer(const VertexBufferDesc&);
 		~GLVertexBuffer();
 
-		/// get data pointer for modifying the buffer
-		virtual U8 *Map();
-		/// finish modifications and upload to gpu
 		virtual void Unmap();
 
 		void PrepareForDraw();
+
+	protected:
+		virtual U8 *MapInternal();
 
 	private:
 		void SetupAttribPointers();
