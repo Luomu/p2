@@ -100,7 +100,9 @@ glm::mat4 convert_matrix(const OVR::Matrix4f &from) {
 
 glm::mat4 Oculus::GetLookat()
 {
-	float yaw, pitch, roll = 0.f;
+	float yaw   = 0.f;
+	float pitch = 0.f;
+	float roll  = 0.f;
 	if (m_sensor) {
 		OVR::Quatf hmdOrient = m_sfusion.GetOrientation();
 

@@ -5,16 +5,18 @@
 #include <iostream>
 #pragma comment(lib, "Dbghelp")
 
+const size_t STACK_SIZE = 100;
+
 void OS::PrintStackTrace()
 {
-	void *stack[100];
+	void *stack[STACK_SIZE];
 
 	HANDLE process = GetCurrentProcess();
 
 	SymSetOptions(SYMOPT_LOAD_LINES);
 	SymInitialize(process, NULL, TRUE);
 
-	unsigned short frames = CaptureStackBackTrace(0, 200, stack, NULL);
+	unsigned short frames = CaptureStackBackTrace(0, STACK_SIZE, stack, NULL);
 	SYMBOL_INFO *symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
 	symbol->MaxNameLen = 255;
 	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);

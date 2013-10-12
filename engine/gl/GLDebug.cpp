@@ -22,44 +22,6 @@ void GlDebug::AddMessage(const std::string &msg)
 		GLsizei(msg.size()), msg.c_str());
 }
 
-void GlDebug::PrintStack()
-{
-	unsigned int   i;
-	void         * stack[ 100 ];
-	unsigned short frames;
-	SYMBOL_INFO  * symbol;
-	HANDLE         process;
-
-	process = GetCurrentProcess();
-	SymSetOptions(SYMOPT_LOAD_LINES);
-	SymInitialize( process, NULL, TRUE );
-
-	frames               = CaptureStackBackTrace( 0, 200, stack, NULL );
-	symbol               = ( SYMBOL_INFO * )calloc( sizeof( SYMBOL_INFO ) + 256 * sizeof( char ), 1 );
-	symbol->MaxNameLen   = 255;
-	symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
-
-	for( i = 0; i < frames; i++ )
-	{
-		SymFromAddr( process, ( DWORD64 )( stack[ i ] ), 0, symbol );
-		DWORD  dwDisplacement;
-		IMAGEHLP_LINE64 line;
-
-		line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
-		if (!strstr(symbol->Name,"VSDebugLib::") &&
-			SymGetLineFromAddr64(process, ( DWORD64 )( stack[ i ] ), &dwDisplacement, &line)) {
-				*outStream << "function: " << symbol->Name <<
-					" - line: " << line.LineNumber << "\n";
-		}
-		if (0 == strcmp(symbol->Name,"main"))
-			break;
-	}
-
-	free( symbol );
-
-	SDL_assert_release(false);
-}
-
 void GlDebug::DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity,
 	GLsizei length, const GLchar *message, const void *userParam)
 {
@@ -69,7 +31,7 @@ void GlDebug::DebugLog(GLenum source, GLenum type, GLuint id, GLenum severity,
 		getStringForSeverity(severity).c_str() << "\n" << message << "\n";
 
 	if (severity == GL_DEBUG_SEVERITY_HIGH)
-		PrintStack();
+		OS::PrintStackTrace();
 }
 
 // aux function to translate source to string

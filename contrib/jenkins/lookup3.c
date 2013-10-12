@@ -35,6 +35,8 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
 */
 /* #define SELF_TEST 1 */
 
+#pragma warning(disable:4101)
+
 #include "lookup3.h"
 
 #include <stdio.h>      /* defines printf for tests */

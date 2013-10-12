@@ -1,7 +1,14 @@
+--This is VS oriented but it's not a big effort to add
+--configurations for other platforms.
 solution "p2"
 	configurations { "Debug", "Release" }
 	platforms { "x64" }
-	flags { "Symbols", "Unicode" }
+	flags {
+		"Symbols",
+		"Unicode",
+		"FatalWarnings",
+		"NoEditAndContinue"
+	}
 	language "C++"
 	defines { "_CRT_SECURE_NO_WARNINGS" }
 	includedirs {
@@ -17,6 +24,12 @@ solution "p2"
 		"../p2-thirdparty/sdl_image/lib",
 		"../p2-thirdparty/ovr/lib",
 		"../p2-thirdparty/libsigc++/lib",
+	}
+	--disable some VS specific warnings
+	--try to provide some rationale
+	buildoptions {
+		"/wd4244", --conversion from x to x, don't care on gcc
+		"/wd4800", --int-to-bool, don't care on gcc
 	}
 
 	--project definitions may be split into sub .luas
