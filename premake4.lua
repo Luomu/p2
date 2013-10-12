@@ -30,6 +30,7 @@ solution "p2"
 	buildoptions {
 		"/wd4244", --conversion from x to x, don't care on gcc
 		"/wd4800", --int-to-bool, don't care on gcc
+		"/wd4351", --default initialize array - this is not "new" behavior
 	}
 
 	--project definitions may be split into sub .luas
