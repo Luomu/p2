@@ -115,7 +115,47 @@ struct GLShader {
 		else
 			AppendSource("#define FRAGMENT_SHADER\n");
 
-		AppendSource(code->AsStringRange().StripUTF8BOM());
+		//keep these until after glShaderSource
+		std::vector<RefCountedPtr<FileSystem::FileData>> includeHandles;
+
+		//handle includes
+		StringRange csr = code->AsStringRange().StripUTF8BOM();
+		const char *p = strstr(csr.begin, "#include");
+		const char *blockBegin = csr.begin;
+		while (p) {
+			const char *incStart = p;
+			p += 8;
+			while (isspace(*p)) ++p;
+			SDL_assert(*p == '"');
+			++p;
+			//64 char max filename
+			static char includeFile[64];
+			U32 i = 0;
+			while (*p != '"') {
+				includeFile[i++] = *p++;
+				if (i >=64)
+					OS::Error("GLSL include name longer than 64 chars");
+			}
+			++p;
+			includeFile[i] = 0;
+
+			//append what we have so far
+			AppendSource(StringRange(blockBegin, incStart));
+			blockBegin = p; //end of last include
+
+			//Got a file! try to load it
+			const std::string incFileName = FileSystem::JoinPathBelow(code->GetInfo().GetDir(), includeFile);
+			RefCountedPtr<FileSystem::FileData> incCode = FileSystem::gameDataFiles.ReadFile(incFileName);
+			includeHandles.push_back(incCode);
+
+			//should handle includes recursively but nah
+			AppendSource(incCode->AsStringRange().StripUTF8BOM());
+
+			//keep looking for includes
+			p = strstr(p, "#include");
+		}
+		AppendSource(StringRange(blockBegin, csr.end));
+
 		shader = glCreateShader(type);
 		Compile(shader);
 
