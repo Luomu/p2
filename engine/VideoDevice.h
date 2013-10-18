@@ -62,8 +62,25 @@ namespace Video {
 		///draw primitives using the currently bound index buffer
 		virtual void DrawIndexed(U32 idxCount)        = 0;
 
+		//--generic matrices, drawing does not have to obey these
+		void SetWorldMatrix(const mat4&);
+		void SetViewMatrix(const mat4&);
+		void SetProjectionMatrix(const mat4&);
+
+		ivec4 GetViewport() const               { return m_viewport;    }
+
+		const mat4 &GetWorldMatrix() const      { return m_worldMatrix; }
+		const mat4 &GetViewMatrix() const       { return m_viewMatrix;  }
+		const mat4 &GetProjectionMatrix() const { return m_projMatrix;  }
+
 		//--some optional dev functions
 		virtual void ReloadShaders() { }
+
 	protected:
+		ivec4 m_viewport;
+
+		mat4 m_worldMatrix;
+		mat4 m_viewMatrix;
+		mat4 m_projMatrix;
 	};
 }

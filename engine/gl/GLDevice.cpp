@@ -178,6 +178,7 @@ void GLDevice::ClearDepth(float depth)
 
 void GLDevice::SetViewport(U32 x, U32 y, U32 w, U32 h)
 {
+	m_viewport = ivec4(x, y, w, h);
 	glViewport(x, y, w, h);
 }
 

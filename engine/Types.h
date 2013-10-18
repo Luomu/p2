@@ -11,9 +11,11 @@ typedef unsigned int   U32;
 const double PI = 3.14159265358979323846;
 
 using glm::ivec2;
+using glm::ivec4;
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
+using glm::mat3;
 using glm::mat4;
 using glm::quat;
 

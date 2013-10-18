@@ -82,9 +82,8 @@ void Font::RenderString(const char *str, float x, float y, const Color &color)
 
 	//set constants
 	mat4 modelView(1.f);
-	mat4 proj = glm::ortho(0.f, 1280.f, 800.f, 0.f);
 	m_cbuffer->Set(c_ModelViewMatrix, modelView);
-	m_cbuffer->Set(c_ProjMatrix, proj);
+	m_cbuffer->Set(c_ProjMatrix, m_video->GetProjectionMatrix());
 	m_shader->ApplyConstants(m_cbuffer.get());
 
 	m_video->Draw(0, m_vtxCount);
